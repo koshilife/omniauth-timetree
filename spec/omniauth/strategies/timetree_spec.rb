@@ -53,7 +53,7 @@ describe OmniAuth::Strategies::Timetree do
 
   describe '#raw_info' do
     let(:access_token) { double('AccessToken', options: {}) }
-    let(:response) { double('Response', parsed: { 'data' => USER_API_RESPONSE }) }
+    let(:response) { double('Response', body: { 'data' => USER_API_RESPONSE }.to_json) }
 
     before do
       allow(subject).to receive(:access_token) { access_token }
@@ -61,9 +61,10 @@ describe OmniAuth::Strategies::Timetree do
 
     it 'returns raw_info' do
       expected_endpoint = 'https://timetreeapis.com/user'
-      expected_headers = { headers: { 'Accept' => 'application/vnd.timetree.v1+json' } }
+      expected_headers =  { headers: { 'Accept' => 'application/vnd.timetree.v1+json' } }
       allow(access_token).to receive(:get).with(expected_endpoint, expected_headers) { response }
-      expect(subject.raw_info).to eq(USER_API_RESPONSE)
+      expected = Hash[USER_API_RESPONSE.map { |k, v| [k.to_sym, v] }]
+      expect(subject.raw_info).to eq(expected)
     end
   end
 

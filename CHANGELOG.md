@@ -1,3 +1,7 @@
+# 0.1.2
+
+- fixed a bug for empty uid
+
 # 0.1.1
 
 - fixed a bug for mistakes of TimeTree API URL after exchanging token
