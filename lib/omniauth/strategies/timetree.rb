@@ -17,7 +17,9 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= access_token.get('/user').parsed['data'] || {}
+        endpoint = 'https://timetreeapis.com/user'
+        options = { headers: { 'Accept' => 'application/vnd.timetree.v1+json' } }
+        @raw_info ||= access_token.get(endpoint, options).parsed['data'] || {}
       end
 
       def callback_url
