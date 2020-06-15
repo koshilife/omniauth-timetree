@@ -44,9 +44,7 @@ The auth hash `request.env['omniauth.auth']` would look like this:
 	"uid": "12345",
 	"credentials": {
 		"token": "ACCESS_TOKEN",
-		"refresh_token": "REFRESH_TOKEN",
-		"expires_at": 1581419031,
-		"expires": true
+		"expires": false
 	},
 	"extra": {
 		"id": "12345",
