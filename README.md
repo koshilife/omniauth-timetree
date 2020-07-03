@@ -1,6 +1,9 @@
 # Omniauth::Timetree
 
+[![Test](https://github.com/koshilife/omniauth-timetree/workflows/Test/badge.svg)](https://github.com/koshilife/omniauth-timetree/actions?query=workflow%3ATest)
+[![codecov](https://codecov.io/gh/koshilife/omniauth-timetree/branch/master/graph/badge.svg)](https://codecov.io/gh/koshilife/omniauth-timetree)
 [![Gem Version](https://badge.fury.io/rb/omniauth-timetree.svg)](http://badge.fury.io/rb/omniauth-timetree)
+[![license](https://img.shields.io/github/license/koshilife/omniauth-timetree)](https://github.com/koshilife/omniauth-timetree/blob/master/LICENSE.txt)
 
 This gem contains the [TimeTree](https://timetreeapp.com/) strategy for OmniAuth.
 
