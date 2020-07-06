@@ -11,23 +11,15 @@ describe OmniAuth::Strategies::Timetree do
     it 'returns correct site' do
       expect(subject.options.client_options.site).to eq('https://timetreeapp.com')
     end
-
-    it 'returns correct authorize_url' do
-      expect(subject.options.client_options.authorize_url).to eq('/oauth/authorize')
-    end
-
-    it 'returns correct token_url' do
-      expect(subject.options.client_options.token_url).to eq('/oauth/token')
-    end
   end
 
   USER_API_RESPONSE = {
-    "id": '12345',
-    "type": 'user',
-    "attributes": {
-      "name": 'Your Name',
-      "description": 'blah blah blah',
-      "image_url": 'https://attachments.timetreeapp.com/path/to/image.png'
+    :id => '12345',
+    :type => 'user',
+    :attributes => {
+      :name => 'Your Name',
+      :description => 'blah blah blah',
+      :image_url => 'https://attachments.timetreeapp.com/path/to/image.png'
     }
   }.freeze
 
@@ -47,13 +39,13 @@ describe OmniAuth::Strategies::Timetree do
     end
 
     it 'returns correct extra block' do
-      expect(subject.extra).to eq(raw_info: USER_API_RESPONSE)
+      expect(subject.extra).to eq(:raw_info => USER_API_RESPONSE)
     end
   end
 
   describe '#raw_info' do
-    let(:access_token) { double('AccessToken', options: {}) }
-    let(:response) { double('Response', body: { 'data' => USER_API_RESPONSE }.to_json) }
+    let(:access_token) { double('AccessToken', :options => {}) }
+    let(:response) { double('Response', :body => {'data' => USER_API_RESPONSE}.to_json) }
 
     before do
       allow(subject).to receive(:access_token) { access_token }
@@ -61,7 +53,7 @@ describe OmniAuth::Strategies::Timetree do
 
     it 'returns raw_info' do
       expected_endpoint = 'https://timetreeapis.com/user'
-      expected_headers =  { headers: { 'Accept' => 'application/vnd.timetree.v1+json' } }
+      expected_headers =  {:headers => {'Accept' => 'application/vnd.timetree.v1+json'}}
       allow(access_token).to receive(:get).with(expected_endpoint, expected_headers) { response }
       expected = Hash[USER_API_RESPONSE.map { |k, v| [k.to_sym, v] }]
       expect(subject.raw_info).to eq(expected)

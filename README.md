@@ -1,4 +1,4 @@
-# Omniauth::Timetree
+# OmniAuth::Timetree
 
 [![Test](https://github.com/koshilife/omniauth-timetree/workflows/Test/badge.svg)](https://github.com/koshilife/omniauth-timetree/actions?query=workflow%3ATest)
 [![codecov](https://codecov.io/gh/koshilife/omniauth-timetree/branch/master/graph/badge.svg)](https://codecov.io/gh/koshilife/omniauth-timetree)
