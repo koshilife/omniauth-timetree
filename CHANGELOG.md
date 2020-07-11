@@ -1,3 +1,7 @@
+# 0.2.1
+
+- bug fix for 'TimeTree' camelization.
+
 # 0.2.0
 
 - do refactor.
