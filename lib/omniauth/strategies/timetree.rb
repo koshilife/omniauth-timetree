@@ -4,24 +4,24 @@ require 'omniauth-oauth2'
 
 module OmniAuth
   module Strategies
-    class Timetree < OmniAuth::Strategies::OAuth2
+    class TimeTree < OmniAuth::Strategies::OAuth2
       option :name, 'timetree'
       option :client_options, :site => 'https://timetreeapp.com'
 
-      uid { raw_info[:id] }
+      uid { raw_info['id'] }
 
       extra do
         {:raw_info => raw_info}
       end
 
+    private
+
       def raw_info
-        return @raw_info unless @raw_info.nil?
+        return @raw_info if defined?(@raw_info)
 
         endpoint = 'https://timetreeapis.com/user'
         options = {:headers => {'Accept' => 'application/vnd.timetree.v1+json'}}
-        res = access_token.get(endpoint, options)
-        parsed_body = JSON.parse(res.body, :symbolize_names => true)
-        @raw_info = parsed_body[:data] || {}
+        @raw_info = access_token.get(endpoint, options).parsed
       end
 
       def callback_url

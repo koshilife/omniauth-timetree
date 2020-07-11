@@ -1,3 +1,9 @@
+# 0.2.0
+
+- rename `OmniAuth::TimeTree` module from `Omniauth::Timetree`.
+- improve tests with Rack::Test.
+- do refactor.
+
 # 0.1.3
 
 - refs #1 setup GitHub Actions for rspec and pushing to RubyGems.

@@ -8,3 +8,6 @@ if ENV['CI'] == 'true'
 end
 
 require 'omniauth-timetree'
+require 'omniauth'
+require 'rack/test'
+require 'webmock/rspec'
