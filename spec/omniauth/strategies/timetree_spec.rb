@@ -2,69 +2,104 @@
 
 require 'spec_helper'
 
-describe OmniAuth::Strategies::Timetree do
-  subject do
-    described_class.new({})
+describe OmniAuth::Strategies::TimeTree do
+  include OmniAuth::Test::StrategyTestCase
+  include Rack::Test::Methods
+
+  before do
+    @logger = Logger.new STDOUT
+    OmniAuth.config.logger = @logger
+
+    @client_id = 'DUMMY_CLIENT_ID'
+    @client_secret = 'DUMMY_CLIENT_SECRET'
+    @options = {:provider_ignores_state => true}
+    @authorization_code = 'DUMMY_AUTH_CODE'
+    @access_token = 'DUMMY_TOKEN'
   end
 
-  context 'client options' do
-    it 'returns correct site' do
-      expect(subject.options.client_options.site).to eq('https://timetreeapp.com')
-    end
+  let(:strategy) do
+    [OmniAuth::Strategies::TimeTree, @client_id, @client_secret, @options]
   end
 
-  USER_API_RESPONSE = {
-    :id => '12345',
-    :type => 'user',
-    :attributes => {
-      :name => 'Your Name',
-      :description => 'blah blah blah',
-      :image_url => 'https://attachments.timetreeapp.com/path/to/image.png'
+  let(:add_mock_exchange_token) do
+    WebMock.enable!
+    url = 'https://timetreeapp.com/oauth/token'
+    body = {
+      :client_id => @client_id,
+      :client_secret => @client_secret,
+      :code => @authorization_code,
+      :grant_type =>  'authorization_code',
+      :redirect_uri => 'http://example.org/auth/timetree/callback'
     }
-  }.freeze
+    res_headers = {'Content-Type' => 'application/json'}
+    stub_request(:post, url).with(:body => URI.encode_www_form(body)).to_return(:status => 200, :body => dummy_token_response.to_json, :headers => res_headers)
+  end
 
-  context 'uid' do
-    before do
-      allow(subject).to receive(:raw_info) { USER_API_RESPONSE }
+  let(:dummy_token_response) do
+    {
+      :access_token => @access_token,
+      :created_at => 1_558_583_443,
+      :token_type => 'Bearer'
+    }
+  end
+
+  let(:add_mock_user_info) do
+    WebMock.enable!
+    url = 'https://timetreeapis.com/user'
+    req_headers = {
+      'Authorization' => "Bearer #{@access_token}",
+      'Accept' => 'application/vnd.timetree.v1+json'
+    }
+    res_headers = {'Content-Type' => 'application/json'}
+    stub_request(:get, url).with(:headers => req_headers).to_return(:status => 200, :body => dummy_user_info.to_json, :headers => res_headers)
+  end
+
+  let(:dummy_user_info) do
+    {
+      :id => '12345',
+      :type => 'user',
+      :attributes => {
+        :name => 'Your Name',
+        :description => 'blah blah blah',
+        :image_url => 'https://attachments.timetreeapp.com/path/to/image.png'
+      }
+    }
+  end
+
+  context 'client options.' do
+    let(:strategy) do
+      args = [@client_id, @client_secret, @options]
+      OmniAuth::Strategies::TimeTree.new(nil, *args)
     end
-
-    it 'returns correct uid' do
-      expect(subject.uid).to eq('12345')
+    it 'should return correct client_id.' do
+      expect(strategy.options[:client_id]).to eq(@client_id)
+    end
+    it 'should return correct client_secret.' do
+      expect(strategy.options[:client_secret]).to eq(@client_secret)
+    end
+    it 'should return correct site.' do
+      expect(strategy.options.client_options.site).to eq('https://timetreeapp.com')
     end
   end
 
-  context 'extra' do
-    before do
-      allow(subject).to receive(:raw_info) { USER_API_RESPONSE }
-    end
+  context 'callback phase.' do
+    it 'should get an access token and user information.' do
+      add_mock_exchange_token
+      add_mock_user_info
+      post '/auth/timetree/callback', :code => @authorization_code, :state => 'state123'
 
-    it 'returns correct extra block' do
-      expect(subject.extra).to eq(:raw_info => USER_API_RESPONSE)
-    end
-  end
-
-  describe '#raw_info' do
-    let(:access_token) { double('AccessToken', :options => {}) }
-    let(:response) { double('Response', :body => {'data' => USER_API_RESPONSE}.to_json) }
-
-    before do
-      allow(subject).to receive(:access_token) { access_token }
-    end
-
-    it 'returns raw_info' do
-      expected_endpoint = 'https://timetreeapis.com/user'
-      expected_headers =  {:headers => {'Accept' => 'application/vnd.timetree.v1+json'}}
-      allow(access_token).to receive(:get).with(expected_endpoint, expected_headers) { response }
-      expected = Hash[USER_API_RESPONSE.map { |k, v| [k.to_sym, v] }]
-      expect(subject.raw_info).to eq(expected)
-    end
-  end
-
-  describe '#callback_url' do
-    it 'returns callback url' do
-      allow(subject).to receive(:full_host) { 'http://localhost' }
-      allow(subject).to receive(:script_name) { '/v1' }
-      expect(subject.callback_url).to eq 'http://localhost/v1/auth/timetree/callback'
+      user_info = dummy_user_info
+      actual_auth = last_request.env['omniauth.auth'].to_hash
+      expected_auth = {
+        'provider' => 'timetree',
+        'uid' => user_info[:id],
+        'info' => {'name' => nil},
+        'credentials' => {'token' => @access_token, 'expires' => false},
+        'extra' => {
+          'raw_info' => JSON.parse(user_info.to_json)
+        }
+      }
+      expect(expected_auth).to eq(actual_auth)
     end
   end
 end
