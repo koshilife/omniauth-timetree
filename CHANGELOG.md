@@ -1,8 +1,9 @@
 # 0.2.0
 
+- do refactor.
 - rename `OmniAuth::TimeTree` module from `Omniauth::Timetree`.
 - improve tests with Rack::Test.
-- do refactor.
+- update gem-push GitHub Actions settings in order to ignore error for same version.
 
 # 0.1.3
 
