@@ -1,3 +1,7 @@
+# 0.3.0
+
+- refs #9 fix dependencies.
+
 # 0.2.1
 
 - bug fix for 'TimeTree' camelization.
