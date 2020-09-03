@@ -6,12 +6,12 @@ module OmniAuth
   module Strategies
     class TimeTree < OmniAuth::Strategies::OAuth2
       option :name, 'timetree'
-      option :client_options, :site => 'https://timetreeapp.com'
+      option :client_options, site: 'https://timetreeapp.com'
 
       uid { raw_info['id'] }
 
       extra do
-        {:raw_info => raw_info}
+        {raw_info: raw_info}
       end
 
     private
@@ -20,7 +20,7 @@ module OmniAuth
         return @raw_info if defined?(@raw_info)
 
         endpoint = 'https://timetreeapis.com/user'
-        options = {:headers => {'Accept' => 'application/vnd.timetree.v1+json'}}
+        options = {headers: {'Accept' => 'application/vnd.timetree.v1+json'}}
         @raw_info = access_token.get(endpoint, options).parsed
       end
 
