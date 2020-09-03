@@ -12,7 +12,7 @@ describe OmniAuth::Strategies::TimeTree do
 
     @client_id = 'DUMMY_CLIENT_ID'
     @client_secret = 'DUMMY_CLIENT_SECRET'
-    @options = {:provider_ignores_state => true}
+    @options = {provider_ignores_state: true}
     @authorization_code = 'DUMMY_AUTH_CODE'
     @access_token = 'DUMMY_TOKEN'
   end
@@ -25,21 +25,21 @@ describe OmniAuth::Strategies::TimeTree do
     WebMock.enable!
     url = 'https://timetreeapp.com/oauth/token'
     body = {
-      :client_id => @client_id,
-      :client_secret => @client_secret,
-      :code => @authorization_code,
-      :grant_type =>  'authorization_code',
-      :redirect_uri => 'http://example.org/auth/timetree/callback'
+      client_id: @client_id,
+      client_secret: @client_secret,
+      code: @authorization_code,
+      grant_type: 'authorization_code',
+      redirect_uri: 'http://example.org/auth/timetree/callback'
     }
     res_headers = {'Content-Type' => 'application/json'}
-    stub_request(:post, url).with(:body => URI.encode_www_form(body)).to_return(:status => 200, :body => dummy_token_response.to_json, :headers => res_headers)
+    stub_request(:post, url).with(body: URI.encode_www_form(body)).to_return(status: 200, body: dummy_token_response.to_json, headers: res_headers)
   end
 
   let(:dummy_token_response) do
     {
-      :access_token => @access_token,
-      :created_at => 1_558_583_443,
-      :token_type => 'Bearer'
+      access_token: @access_token,
+      created_at: 1_558_583_443,
+      token_type: 'Bearer'
     }
   end
 
@@ -51,17 +51,17 @@ describe OmniAuth::Strategies::TimeTree do
       'Accept' => 'application/vnd.timetree.v1+json'
     }
     res_headers = {'Content-Type' => 'application/json'}
-    stub_request(:get, url).with(:headers => req_headers).to_return(:status => 200, :body => dummy_user_info.to_json, :headers => res_headers)
+    stub_request(:get, url).with(headers: req_headers).to_return(status: 200, body: dummy_user_info.to_json, headers: res_headers)
   end
 
   let(:dummy_user_info) do
     {
-      :id => '12345',
-      :type => 'user',
-      :attributes => {
-        :name => 'Your Name',
-        :description => 'blah blah blah',
-        :image_url => 'https://attachments.timetreeapp.com/path/to/image.png'
+      id: '12345',
+      type: 'user',
+      attributes: {
+        name: 'Your Name',
+        description: 'blah blah blah',
+        image_url: 'https://attachments.timetreeapp.com/path/to/image.png'
       }
     }
   end
@@ -86,7 +86,7 @@ describe OmniAuth::Strategies::TimeTree do
     it 'should get an access token and user information.' do
       add_mock_exchange_token
       add_mock_user_info
-      post '/auth/timetree/callback', :code => @authorization_code, :state => 'state123'
+      post '/auth/timetree/callback', code: @authorization_code, state: 'state123'
 
       user_info = dummy_user_info
       actual_auth = last_request.env['omniauth.auth'].to_hash
