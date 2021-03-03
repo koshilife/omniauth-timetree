@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.0
+
+- refs #12 allowed for omniauth 2.0 series.
+
 ## 0.4.0
 
 - fix #13 set uid field.
