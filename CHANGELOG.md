@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.0
+
+- be specified dependency for omniauth 1.9.
+
 ## 0.3.1
 
 - fix rubocop warnings.
