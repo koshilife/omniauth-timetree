@@ -32,7 +32,8 @@ describe OmniAuth::Strategies::TimeTree do
       redirect_uri: 'http://example.org/auth/timetree/callback'
     }
     res_headers = {'Content-Type' => 'application/json'}
-    stub_request(:post, url).with(body: URI.encode_www_form(body)).to_return(status: 200, body: dummy_token_response.to_json, headers: res_headers)
+    stub_request(:post, url).with(body: URI.encode_www_form(body)).to_return(status: 200,
+body: dummy_token_response.to_json, headers: res_headers)
   end
 
   let(:dummy_token_response) do
@@ -51,17 +52,20 @@ describe OmniAuth::Strategies::TimeTree do
       'Accept' => 'application/vnd.timetree.v1+json'
     }
     res_headers = {'Content-Type' => 'application/json'}
-    stub_request(:get, url).with(headers: req_headers).to_return(status: 200, body: dummy_user_info.to_json, headers: res_headers)
+    stub_request(:get, url).with(headers: req_headers).to_return(status: 200, body: dummy_user_info.to_json,
+headers: res_headers)
   end
 
   let(:dummy_user_info) do
     {
-      id: '12345',
-      type: 'user',
-      attributes: {
-        name: 'Your Name',
-        description: 'blah blah blah',
-        image_url: 'https://attachments.timetreeapp.com/path/to/image.png'
+      data: {
+        id: '12345',
+        type: 'user',
+        attributes: {
+          name: 'Your Name',
+          description: 'blah blah blah',
+          image_url: 'https://attachments.timetreeapp.com/path/to/image.png'
+        }
       }
     }
   end
@@ -92,7 +96,7 @@ describe OmniAuth::Strategies::TimeTree do
       actual_auth = last_request.env['omniauth.auth'].to_hash
       expected_auth = {
         'provider' => 'timetree',
-        'uid' => user_info[:id],
+        'uid' => user_info[:data][:id],
         'info' => {'name' => nil},
         'credentials' => {'token' => @access_token, 'expires' => false},
         'extra' => {

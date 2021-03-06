@@ -2,7 +2,8 @@
 
 ## 0.4.0
 
-- be specified dependency for omniauth 1.9.
+- fix #13 set uid field.
+- refs #12 be specified dependency for omniauth 1.9.
 
 ## 0.3.1
 
