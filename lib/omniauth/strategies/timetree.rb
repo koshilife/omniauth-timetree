@@ -8,7 +8,7 @@ module OmniAuth
       option :name, 'timetree'
       option :client_options, site: 'https://timetreeapp.com'
 
-      uid { raw_info['id'] }
+      uid { extract_uid }
 
       extra do
         {raw_info: raw_info}
@@ -22,6 +22,10 @@ module OmniAuth
         endpoint = 'https://timetreeapis.com/user'
         options = {headers: {'Accept' => 'application/vnd.timetree.v1+json'}}
         @raw_info = access_token.get(endpoint, options).parsed
+      end
+
+      def extract_uid
+        raw_info.dig('data', 'id')
       end
 
       def callback_url

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.4.0
+
+- fix #13 set uid field.
+- refs #12 be specified dependency for omniauth 1.9.
+
 ## 0.3.1
 
 - fix rubocop warnings.

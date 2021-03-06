@@ -41,23 +41,28 @@ Replace `"API_KEY"` and `"API_SECRET"` with the appropriate values you obtained 
 
 The auth hash `request.env['omniauth.auth']` would look like this:
 
-```js
+```json
 {
-	"provider": "timetree",
-	"uid": "12345",
-	"credentials": {
-		"token": "ACCESS_TOKEN",
-		"expires": false
-	},
-	"extra": {
-		"id": "12345",
-		"type": "user",
-		"attributes": {
-			"name": "Your Name",
-			"description": "blah blah blah",
-			"image_url": "https://attachments.timetreeapp.com/path/to/image.png"
-		}
-	}
+  "provider": "timetree",
+  "uid": "12345",
+  "credentials": {
+    "token": "ACCESS_TOKEN",
+    "expires": false
+  },
+  "extra": {
+    "raw_info": {
+      "data": {
+        "id": "12345",
+        "type": "user",
+        "attributes": {
+          "name": "Your Name",
+          "description": "blah blah blah",
+          "image_url": "https://attachments.timetreeapp.com/path/to/image.png"
+        }
+      }
+    }
+  }
+}
 ```
 
 ## Contributing
