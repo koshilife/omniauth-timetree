@@ -25,10 +25,7 @@ module OmniAuth
       end
 
       def extract_uid
-        return unless raw_info
-        return unless raw_info['data']
-
-        raw_info['data']['id']
+        raw_info.dig('data', 'id')
       end
 
       def callback_url
